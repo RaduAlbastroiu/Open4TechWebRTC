@@ -12,6 +12,10 @@ form {
 }
 
 .name-field {
+  margin-bottom: 20px;
+}
+
+.channel-field {
   margin-bottom: 40px;
 }
 
@@ -23,6 +27,7 @@ button {
 }
 
 .render-chat {
+  min-width: 200px;
   max-width: 350px;
   border-radius: 5px;
   padding: 20px;

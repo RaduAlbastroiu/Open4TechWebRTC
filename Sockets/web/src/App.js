@@ -11,15 +11,32 @@ function App() {
 
   useEffect(() => {
     console.log('rerender');
-    socketRef.current = io.connect('http://localhost:8000/');
-    socketRef.current.on('message', ({ name, message }) => {
-      setChat((oldVal) => [...oldVal, { name, message }]);
-    });
+    changeSocket();
     return () => socketRef.current.disconnect();
   }, []);
 
   const onTextChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
+  };
+
+  const onChannelChange = (e) => {
+    changeSocket(e.target.value);
+    setChat([]);
+  };
+
+  const changeSocket = (channelId) => {
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+    }
+    if (channelId) {
+      socketRef.current = io.connect(
+        `http://localhost:8000/channel-${channelId}`
+      );
+      socketRef.current.on('message', ({ name, message }) => {
+        console.log('new message');
+        setChat((oldVal) => [...oldVal, { name, message }]);
+      });
+    }
   };
 
   const onMessageSubmit = (e) => {
@@ -49,6 +66,14 @@ function App() {
             onChange={(e) => onTextChange(e)}
             value={state.name}
             label="Name"
+          />
+        </div>
+        <div className="channel-field">
+          <TextField
+            name="channel"
+            onChange={(e) => onChannelChange(e)}
+            value={state.channel}
+            label="Channel"
           />
         </div>
         <div>
