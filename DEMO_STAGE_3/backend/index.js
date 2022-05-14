@@ -1,6 +1,24 @@
 const express = require('express');
 const http = require('http');
+const path = require('path');
 const app = express();
+const dotenv = require('dotenv');
+dotenv.config({ path: './.env' });
+
+app.use(
+  '/',
+  express.static(path.join(__dirname, '../build_frontend'), {
+    maxAge: 24 * 60 * 60 * 1000,
+  })
+);
+
+// enabling html5 history
+app.get('/*', (req, res) => {
+  const indexPath = path.join(__dirname, '../build_frontend/index.html');
+  //@ts-ignore
+  res.sendFile(indexPath);
+});
+
 const server = http.createServer(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 
@@ -28,4 +46,8 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(5001, () => console.log('sever is listening on port 5001'));
+console.log('asd', process.env.PORT);
+
+server.listen(process.env.PORT, () =>
+  console.log(`server is listening on port ${process.env.PORT}`)
+);

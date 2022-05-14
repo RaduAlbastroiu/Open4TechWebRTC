@@ -5,14 +5,18 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index",
+    "start": "node build/index.js",
+    "build-digital-ocean": "npm --prefix ../frontend install && npm --prefix ../frontend run build && cp -r ../frontend/build ./build_frontend && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.1",
     "express": "^4.17.1",
     "nodemon": "^2.0.9",
+    "path": "^0.12.7",
     "socket.io": "^4.1.2"
   }
 }
