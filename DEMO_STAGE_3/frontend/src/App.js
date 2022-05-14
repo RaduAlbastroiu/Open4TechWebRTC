@@ -9,18 +9,18 @@ import Peer from 'simple-peer';
 import io from 'socket.io-client';
 import './App.css';
 
-const socket = io.connect('http://localhost:5000');
+const socket = io.connect('http://localhost:5001');
 
 function App() {
   const [me, setMe] = useState('');
+  const [name, setName] = useState('');
   const [stream, setStream] = useState();
   const [receivingCall, setReceivingCall] = useState(false);
   const [caller, setCaller] = useState('');
+  const [callerName, setCallerName] = useState('');
   const [callerSignal, setCallerSignal] = useState();
-  const [callAccepted, setCallAccepted] = useState(false);
+  const [callActive, setCallActive] = useState(false);
   const [idToCall, setIdToCall] = useState('');
-  const [callEnded, setCallEnded] = useState(false);
-  const [name, setName] = useState('');
 
   const myVideo = useRef();
   const userVideo = useRef();
@@ -41,8 +41,17 @@ function App() {
     socket.on('callUser', (data) => {
       setReceivingCall(true);
       setCaller(data.from);
-      setName(data.name);
+      setCallerName(data.name);
       setCallerSignal(data.signal);
+    });
+
+    socket.on('callEnded', (data) => {
+      setReceivingCall(false);
+      setCaller('');
+      setCallerName('');
+      setCallerSignal(null);
+      setCallActive(false);
+      setIdToCall('');
     });
   }, []);
 
@@ -66,16 +75,18 @@ function App() {
       userVideo.current.srcObject = stream;
     });
 
-    socket.on('callAccepted', (signal) => {
-      setCallAccepted(true);
-      peer.signal(signal);
+    socket.on('callAccepted', (data) => {
+      setCallerName(data.name);
+      setCallActive(true);
+      setCaller(data.from);
+      peer.signal(data.signal);
     });
 
     connectionRef.current = peer;
   };
 
   const answerCall = () => {
-    setCallAccepted(true);
+    setCallActive(true);
     const peer = new Peer({
       initiator: false,
       trickle: false,
@@ -83,7 +94,12 @@ function App() {
     });
 
     peer.on('signal', (data) => {
-      socket.emit('answerCall', { signal: data, to: caller });
+      socket.emit('answerCall', {
+        signal: data,
+        name: name,
+        from: me,
+        to: caller,
+      });
     });
 
     peer.on('stream', (stream) => {
@@ -95,7 +111,16 @@ function App() {
   };
 
   const leaveCall = () => {
-    setCallEnded(true);
+    socket.emit('callEnded', {
+      to: caller,
+      from: me,
+    });
+    setReceivingCall(false);
+    setCaller('');
+    setCallerName('');
+    setCallerSignal(null);
+    setCallActive(false);
+    setIdToCall('');
     connectionRef.current.destroy();
   };
 
@@ -116,7 +141,7 @@ function App() {
             )}
           </div>
           <div className="video">
-            {callAccepted && !callEnded ? (
+            {callActive ? (
               <video
                 playsInline
                 ref={userVideo}
@@ -155,7 +180,7 @@ function App() {
           />
 
           <div className="call-button">
-            {callAccepted && !callEnded ? (
+            {callActive ? (
               <Button variant="contained" color="secondary" onClick={leaveCall}>
                 End Call
               </Button>
@@ -173,9 +198,9 @@ function App() {
         </div>
 
         <div>
-          {receivingCall && !callAccepted ? (
+          {receivingCall && !callActive ? (
             <div className="caller">
-              <hi>{name} is calling...</hi>
+              <hi>{callerName} is calling...</hi>
               <Button variant="contained" color="primary" onClick={answerCall}>
                 Answer Call
               </Button>

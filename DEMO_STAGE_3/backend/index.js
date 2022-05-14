@@ -20,8 +20,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('answerCall', (data) => {
-    io.to(data.to).emit('callAccepted', data.signal);
+    io.to(data.to).emit('callAccepted', data);
+  });
+
+  socket.on('callEnded', (data) => {
+    io.to(data.to).emit('callEnded', data);
   });
 });
 
-server.listen(5000, () => console.log('sever is listening on port 5000'));
+server.listen(5001, () => console.log('sever is listening on port 5001'));
