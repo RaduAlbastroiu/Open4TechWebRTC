@@ -7,14 +7,14 @@ dotenv.config({ path: './.env' });
 
 app.use(
   '/',
-  express.static(path.join(__dirname, '../build_frontend'), {
+  express.static(path.join(__dirname, './build_frontend'), {
     maxAge: 24 * 60 * 60 * 1000,
   })
 );
 
 // enabling html5 history
 app.get('/*', (req, res) => {
-  const indexPath = path.join(__dirname, '../build_frontend/index.html');
+  const indexPath = path.join(__dirname, './build_frontend/index.html');
   //@ts-ignore
   res.sendFile(indexPath);
 });
