@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index",
-    "start": "node build/index.js",
+    "start": "node index.js",
     "build-digital-ocean": "npm --prefix ../frontend install && npm --prefix ../frontend run build && cp -r ../frontend/build ./build_frontend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
