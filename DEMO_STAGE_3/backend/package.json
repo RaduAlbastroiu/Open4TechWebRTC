@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index",
     "start": "node build/index.js",
-    "build-digital-ocean": "npm --prefix ../frontend install && npm --prefix ../frontend run build && cp -r ../frontend/build ./build_frontend && npm run build",
+    "build-digital-ocean": "npm --prefix ../frontend install && npm --prefix ../frontend run build && cp -r ../frontend/build ./build_frontend && npm build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
