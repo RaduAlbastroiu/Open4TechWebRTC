@@ -21,6 +21,7 @@ function App() {
   const [callerSignal, setCallerSignal] = useState();
   const [callActive, setCallActive] = useState(false);
   const [idToCall, setIdToCall] = useState('');
+  const [isCalling, setIsCalling] = useState(false);
 
   const myVideo = useRef();
   const userVideo = useRef();
@@ -56,6 +57,7 @@ function App() {
   }, []);
 
   const callUser = (id) => {
+    setIsCalling(true);
     const peer = new Peer({
       initiator: true,
       trickle: false,
@@ -78,6 +80,7 @@ function App() {
     socket.on('callAccepted', (data) => {
       setCallerName(data.name);
       setCallActive(true);
+      setIsCalling(false);
       setCaller(data.from);
       peer.signal(data.signal);
     });
@@ -126,7 +129,17 @@ function App() {
 
   return (
     <>
-      <h1 style={{ testAlign: 'center', color: '#fff' }}>Not Zoom</h1>
+      <h1
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          testAlign: 'center',
+          color: '#fff',
+          fontSize: 50,
+        }}
+      >
+        !Zoom
+      </h1>
       <div className="container">
         <div className="video-container">
           <div className="video">
@@ -136,7 +149,7 @@ function App() {
                 muted
                 ref={myVideo}
                 autoPlay
-                style={{ width: '400px' }}
+                style={{ width: '450px' }}
               />
             )}
           </div>
@@ -146,7 +159,7 @@ function App() {
                 playsInline
                 ref={userVideo}
                 autoPlay
-                style={{ width: '400px' }}
+                style={{ width: '450px' }}
               />
             ) : null}
           </div>
@@ -154,7 +167,7 @@ function App() {
         <div className="myId">
           <TextField
             id="filled-basic"
-            label="name"
+            label="Name"
             variant="filled"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -185,28 +198,40 @@ function App() {
                 End Call
               </Button>
             ) : (
-              <IconButton
-                color="primary"
-                aria-label="call"
-                onClick={() => callUser(idToCall)}
-              >
-                <PhoneIcon fontSize="large" />
-              </IconButton>
+              <>
+                <IconButton
+                  color="primary"
+                  aria-label="call"
+                  onClick={() => callUser(idToCall)}
+                >
+                  <PhoneIcon fontSize="large" />
+                </IconButton>
+                {isCalling && <h1>Calling</h1>}
+              </>
             )}
-            {idToCall}
           </div>
         </div>
-
-        <div>
-          {receivingCall && !callActive ? (
-            <div className="caller">
-              <hi>{callerName} is calling...</hi>
-              <Button variant="contained" color="primary" onClick={answerCall}>
-                Answer Call
-              </Button>
-            </div>
-          ) : null}
-        </div>
+      </div>
+      <div className="answer-call">
+        {receivingCall && !callActive ? (
+          <div className="caller">
+            <hi style={{ fontSize: 24 }}>{callerName} is calling...</hi>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={answerCall}
+              style={{
+                width: 240,
+                marginTop: 20,
+                fontSize: 24,
+                color: 'white',
+                backgroundColor: 'green',
+              }}
+            >
+              Answer Call
+            </Button>
+          </div>
+        ) : null}
       </div>
     </>
   );

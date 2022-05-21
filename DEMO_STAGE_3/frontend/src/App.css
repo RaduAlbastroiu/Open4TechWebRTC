@@ -1,5 +1,6 @@
 .container {
   display: grid;
+  margin-top: 14rem;
   grid-template-columns: 7fr 3fr;
 }
 
@@ -29,16 +30,22 @@
   margin-top: 2rem;
 }
 
+.answer-call {
+  margin-top: 5rem;
+}
+
 .video-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  justify-content: center;
-  align-content: center;
-  margin-top: 9rem;
-  margin-left: 9rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .caller {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   color: #fff;
 }

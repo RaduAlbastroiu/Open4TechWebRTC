@@ -46,8 +46,6 @@ io.on('connection', (socket) => {
   });
 });
 
-console.log('asd', process.env.PORT);
-
 server.listen(process.env.PORT, () =>
   console.log(`server is listening on port ${process.env.PORT}`)
 );
