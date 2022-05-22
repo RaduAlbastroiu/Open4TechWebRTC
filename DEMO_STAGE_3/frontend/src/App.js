@@ -215,15 +215,15 @@ function App() {
       <div className="answer-call">
         {receivingCall && !callActive ? (
           <div className="caller">
-            <hi style={{ fontSize: 24 }}>{callerName} is calling...</hi>
+            <hi style={{ fontSize: 20 }}>{callerName} is calling...</hi>
             <Button
               variant="contained"
               color="primary"
               onClick={answerCall}
               style={{
-                width: 240,
-                marginTop: 20,
-                fontSize: 24,
+                width: 200,
+                marginTop: 10,
+                fontSize: 20,
                 color: 'white',
                 backgroundColor: 'green',
               }}
