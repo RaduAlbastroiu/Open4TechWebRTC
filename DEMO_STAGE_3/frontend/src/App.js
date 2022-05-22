@@ -222,8 +222,7 @@ function App() {
               onClick={answerCall}
               style={{
                 width: 200,
-                marginTop: 10,
-                fontSize: 20,
+                fontSize: 16,
                 color: 'white',
                 backgroundColor: 'green',
               }}
